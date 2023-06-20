@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move Recommendation system</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css">
+
+</head>
+<style>
+    @keyframes color {
+        40% {
+            background-image: linear-gradient(to top, #1e1e3b85, #390b89);
+        }
+        60% {
+            background-image: linear-gradient(to top, #0000ff85, #1a0e1f);
+        }
+        80% {
+            background-image: linear-gradient(to top, #54547285, #01328d);
+        }
+        100% {
+            background-image: linear-gradient(to top, #00002a85, #7c02b1);
+        }
+    }
+    
+    body {
+        /* Fallback 
+        animation: color 25s ease infinite;*/
+        background-image: linear-gradient(to top, #0000ff85, #1a0e1f);
+        color: aliceblue;
+    }
+    
+    #img_card {
+        width: 70%;
+        height: 60vh;
+        display: block;
+        margin: auto;
+    }
+    
+    @media screen and (max-width:900px) {
+        body {
+            font-size: medium;
+            background-image: linear-gradient(blue);
+        }
+        #row {
+            display: contents;
+        }
+        #img_card {
+            width: 100%;
+        }
+        #imgm {
+            display: none;
+        }
+    }
+</style>
+
+<body>
+    <nav class="navbar bg-body-tertiary" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand " href="{{ url_for('home') }}"><b class="text-center">Movie Recommendation System</B></a>
+            <a class="navbar-brand " id="imgm" href="{{ url_for('home') }}"><b class="text-center"><img src="https://www.heartoflongmont.org/wp-content/uploads/2019/02/Movie-Recommendation.jpg" style="width: 100px;
+                height: 50px;" alt=""></B></a>
+        </div>
+    </nav>
+
+    <div class="container mt-2">
+        <h4 class="text-center">Movies Recommendation System .......</h4>
+        <div class="containter m-4">
+            <form method="POST">
+                <select class="form-select form-select-sm" aria-label=".form-select-sm example" name="movies-name" data-live-search="true">
+                    <option selected> ---- select movies ---- </option>
+                    {% for i in movies_title %}
+                    <option value="{{ loop.index }}">{{i}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit " name="submit " class="btn btn-primary mt-3 ">Recommend</button> {% if selected %}
+                <hr>
+                <p class="text-center h2">Your selected Movie</p>
+                <div class="card mb-2 ">
+                    <div class="row" id="row">
+                        <div class="col">
+                            <img src="{{select_img}} " id="img_card" class="card-img-top " alt="... ">
+                            <div class="card-body ">
+                                <p class="card-text ">
+                                    <!-- <p class="card-text "><small class="text-muted ">Last updated 3 mins ago</small></p> -->
+                            </div>
+                        </div>
+                        <div class="col">
+                            <center>
+                                <p><b>Overview</b></p>
+                            </center>
+                            <p>{{overview}}</p>
+                            <p><span><b>Title:- </b></span>{{selected}}</p>
+                            <p><span><b>Movie Rating:- </b></span>{{voting}}</p>
+                            <p><span><b>Genres:- </b></span>{{genres}}</p>
+                            <p><span><b>Release date:- </b></span>{{rd}}</p>
+
+                        </div>
+                    </div>
+                </div>
+                {% endif %} {% if recommended %}
+                <hr>
+                <div class="row row-col-5 ">
+                    <h4 class="text-center ">Recommended Movies</h4>
+                    {% for rm,rimg in mylist %}
+                    <div class="col ">
+                        <center>
+                            <div class="card mt-4 " style="width: 14.3rem; ">
+                                <img src="{{rimg}} " class="card-img-top " alt="... ">
+                                <div class="card-body ">
+                                    <h5 class="card-title ">{{rm}}</h5>
+                                    <a href="{{stream}}" class="btn btn-primary ">Watch | Download</a>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                    {% endfor %}
+                </div>{% endif %}
+            </form>
+        </div>
+
+        <div class="row row-col-4 ">
+            <h4 class="text-center ">Top 12 movies</h4>
+            {% for m,img in movie_img %}
+            <div class="col ">
+                <center>
+                    <div class="card mt-4 " style="width: 18rem; ">
+                        <img src="{{img}} " class="card-img-top " alt="... ">
+                        <div class="card-body ">
+                            <h5 class="card-title ">{{m}}</h5>
+                            <!-- <p class="card-text ">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                            <a href="{{stream}}" class="btn btn-primary ">Watch | Download</a>
+                        </div>
+                    </div>
+                </center>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <footer class="bg-light text-center text-white mt-4 " style="background-image: linear-gradient(to left, blue ,brown);">
+        <!-- Grid container -->
+        <div class="container p-4 pb-0 ">
+            <!-- Section: Social media -->
+            <section class="mb-4 ">
+                <!-- Twitter -->
+                <a class="btn btn-primary btn-floating m-1 " style="background-color: #55acee; " target="__blank " href="https://twitter.com/Actgupta" role="button "><i class="fab fa-twitter "></i></a>
+
+                <!-- Google -->
+                <a class="btn btn-primary btn-floating m-1 " style="background-color: #dd4b39; " target="__blank " href="https://rishucareerblogstechnology12.pythonanywhere.com/ " role="button "><i
+                        class="fab fa-google "></i></a>
+
+                <!-- Linkedin -->
+                <a class="btn btn-primary btn-floating m-1 " style="background-color: #0082ca; " target="__blank " href="https://www.linkedin.com/in/rishu-kumar-gupta-058737217/ " role="button "><i
+                        class="fab fa-linkedin-in "></i></a>
+                <!-- Github -->
+                <a class="btn btn-primary btn-floating m-1 " style="background-color: #333333; " target="__blank " href="https://github.com/rkgupta7463 " role="button "><i class="fab fa-github "></i></a>
+            </section>
+            <!-- Section: Social media -->
+        </div>
+        <!-- Grid container -->
+
+        <!-- Copyright -->
+        <div class="text-center p-3 " style="background-color: rgba(0, 0, 0, 0.2); ">
+            © 2023 Copyright:
+            <a class="text-white " style="text-decoration: none;" href="https://rishucareerblogstechnology12.pythonanywhere.com/about/about-me/" target="_blank">Movies Recommendation system</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+
+    <script>
+        $(document).ready(function() {
+            $('#mySelect').select2();
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
+
+
+</body>
+
+</html>
